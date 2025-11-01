@@ -1,0 +1,29 @@
+--superuser 
+user: admin
+password: admin
+Rol: Manager
+
+--users
+    Rol: Delivery Crew
+	"username":"Kitty_Coy",
+	"password": "123456deoA"
+---------------------------------
+    Rol: Manager
+    "username":"Daniel_Ortega"
+	"password": "123456deoA"
+---------------------------------
+    Rol: Delivery Crew
+    "username":"Luisa_Coy",
+	"password": "123456deoA"
+---------------------------------
+    Rol: Delivery Crew
+    "username":"Repartidor",
+	"password": "123456deoA"
+---------------------------------
+    Rol: None
+    "username":"Customer",
+	"password": "123456deoA"
+---------------------------------
+    Rol: None
+    "username":"Daniel_Quesada",
+	"password": "123456deoA"

@@ -15,12 +15,30 @@ urlpatterns = [
     
     #MENU-ITEMS - GET, POST
     path("menu-items/", views.menu_items, name='menu-items'),
+    
+    #SINGLE-MENU-ITEM - GET, PUT, PATCH, DELETE
+    path("menu-items/<int:pk>/", views.single_menu_item, name='single-menu-item'),
+    
+    #CART
+    path("cart/menu-items/", views.cart_items, name='cart'),
+    
+    #ORDERS
+    path("orders/", views.orders, name="orders"),
+    
+    #SINGLE ORDER
+    path("orders/<int:pk>/", views.single_order, name="single-order"),
+    
 ]
     #Functional Endpoints:
-    # http://localhost:8000/api/users
-    # http://localhost:8000/api/users/me
+    # http://localhost:8000/api/users/
+    # http://localhost:8000/api/users/me/
     # http://localhost:8000/api/groups/delivery-crew/users/
     # http://localhost:8000/api/groups/delivery-crew/users/<id>
     # http://localhost:8000/api/groups/manager/users/
     # http://localhost:8000/api/groups/manager/users/<id>
+    # http://localhost:8000/api/menu-items/
+    # http://localhost:8000/api/menu-items/<id>
+    # http://localhost:8000/api/cart/menu-items/
+    # http://localhost:8000/api/orders/
+    # http://localhost:8000/api/orders/<id>
 
