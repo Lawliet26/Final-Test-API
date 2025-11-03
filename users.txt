@@ -27,3 +27,6 @@ Rol: Manager
     Rol: None
     "username":"Daniel_Quesada",
 	"password": "123456deoA"
+
+
+Notes: The file Insomnia contains all necesary request, you have to import in your insomnia app to use it

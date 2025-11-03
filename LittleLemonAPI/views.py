@@ -1,12 +1,16 @@
 from django.shortcuts import render
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from django.contrib.auth.models import User, Group
 from rest_framework import status
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from .models import MenuItem, Category, Cart, Order, OrderItem
 from datetime import date
+from django.db.models import Q
+from rest_framework.pagination import PageNumberPagination
+from .thtottling import MenuItemAnonThrottle, MenuItemUserThrottle
+
 
 # Create your views here.
 
@@ -91,13 +95,64 @@ def delivery_crew_delete(request, userId):
         {"message": "User removed from Delivery crew Group"}, status=status.HTTP_200_OK
     )
 
+class MenuItemPagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 20
 
 # Menu items views - General
 @api_view(["GET", "POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticatedOrReadOnly])
+@throttle_classes([MenuItemUserThrottle, MenuItemAnonThrottle])
 def menu_items(request):
     if request.method == "GET":
         menu_items = MenuItem.objects.all()
+        
+        # Search by category or tittle
+        search = request.GET.get('search')
+        if search:
+            menu_items = menu_items.filter(Q(tittle__icontains=search) | Q(category__tittle__icontains=search))
+            
+        # Filter by price
+        category = request.GET.get('category')
+        if category:
+            menu_items = menu_items.filter(category = category)
+            
+        # Featured filter
+        featured = request.GET.get('featured')
+        if featured is not None:
+            featured_bool = featured.lower() in ['true', '1']
+            menu_items = menu_items.filter(featured = featured_bool)
+            
+        # Price filters gte lte
+        price_gte = request.GET.get('price__gte')
+        if price_gte:
+            menu_items = menu_items.filter(price__gte=price_gte)
+            
+        price_lte = request.GET.get('price__lte')
+        if price_lte:
+            menu_items = menu_items.filter(price__lte=price_lte)
+            
+        # Ordering
+        ordering = request.GET.get('ordering')
+        if ordering:
+            valid_ordering_fields = ['price', '-price', 'tittle','-tittle', 'category', '-category', 'featured', '-featured']
+            
+            if ordering in valid_ordering_fields:
+                if ordering in ['category', '-category']:
+                    ordering_field = 'category__tittle' if ordering == 'category' else '-category__tittle'
+                    menu_items = menu_items.order_by(ordering_field)
+                else:
+                    menu_items = menu_items.order_by(ordering)
+            else:
+                return Response({'message':'Invalid ordering field'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        else:
+            menu_items = menu_items.order_by('id')
+            
+        paginator = MenuItemPagination()
+        paginated_menu_items = paginator.paginate_queryset(menu_items, request)
+        
         menu_items_data = [
             {
                 "id": item.id,
@@ -106,9 +161,9 @@ def menu_items(request):
                 "featured": item.featured,
                 "category": item.category.id,
             }
-            for item in menu_items
+            for item in paginated_menu_items
         ]
-        return Response(menu_items_data, status=status.HTTP_200_OK)
+        return paginator.get_paginated_response(menu_items_data)
 
     if request.method == "POST":
         if not request.user.groups.filter(name="Manager").exists():
@@ -411,39 +466,94 @@ def single_order(request, pk):
         
         #Check all permissions related to roles
         if request.user.groups.filter(name="Manager").exists():
-            pass
+           pass
         elif request.user.groups.filter(name="Delivery crew").exists():
             if order.delivery_crew != request.user:
                 return Response({'message':'You can only view orders assigned to you'}, status=status.HTTP_403_FORBIDDEN)
+            orders = Order.objects.filter(delivery_crew=request.user)
         else:
             if order.user != request.user:
                 return Response({'message':'You can only view your own orders'}, status=status.HTTP_403_FORBIDDEN)
+            orders = Order.objects.filter(user=request.user)
             
-        #Get the order items
-        order_items = OrderItem.objects.filter(order = order)
+        search = request.GET.get('search')
+        if search:
+            orders = orders.filter(
+                Q(user__username__icontains = search) |
+                Q(orderitem__menuitem__tittle__icontains = search)
+            ).distinct()
+            
+        #Filters status
+        status_filter = request.GET.get('status')
+        if status_filter is not None:
+            status_bool = status_filter.lower() in ['true', '1']
+            orders = Order.filter(status=status_bool)
+            
+        delivery_crew = request.GET.get('delivery_crew')
+        if delivery_crew:
+            if delivery_crew.lower() == 'null':
+                orders = orders.filter(delivery_crew__isnull = True)
+            else:
+                orders = orders.filter(delivery_crew=delivery_crew)
+                
+        #Date filters
+        date_filter = request.GET.get('date')
+        if date_filter:
+            orders = orders.filter(date=date_filter)
+            
+        date_gte = request.GET.get('date__gte')
+        if date_gte:
+            orders = orders.filter(date__gte=date_gte)
+            
+        date_lte = request.GET.get('date__lte')
+        if date_lte:
+            orders = orders.filter(date__lte=date_lte)
+            
+        #Ordering
+        ordering = request.GET.get('ordering')
+        if ordering:
+            valid_ordering_fields = ['date', '-date', 'total','-total', 'status', '-status', 'user__username', '-user__username']
+            
+            if ordering in valid_ordering_fields:
+                    orders = orders.order_by(ordering)
+            else:
+                return Response({'message':f'Invalid ordering field. Valid options: {valid_ordering_fields}'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        else:
+            orders = orders.order_by('-date')
+            
+            
+        paginator = MenuItemPagination()
+        paginated_orders = paginator.paginate_queryset(orders, request)
         
-        #Output
-        order_data = {
-            "id": order.id,
-                "user": order.user.id,
-                "delivery_crew": order.delivery_crew.id if order.delivery_crew else None,
-                "status": order.status,
-                "total": str(order.total),
-                "date": str(order.date),
-                "items": [
-                    {
-                        "id": item.id,
-                        "menuitem" : item.menuitem.id,
-                        "menuitem_tittle": item.menuitem.tittle,
-                        "quantity": item.quantity,
-                        "unit_price": str(item.unit_price),
-                        "price": str(item.price)
-                    } 
-                    for item in order_items
-                ]
-        }
-        
-        return Response(order_data, status=status.HTTP_200_OK)
+        orders_data=[]
+        for order in paginated_orders:
+            order_items = OrderItem.objects.filter(order=order) 
+            
+            #Output
+            order_data = {
+                "id": order.id,
+                    "user": order.user.id,
+                    'username': order.user.username,
+                    "delivery_crew": order.delivery_crew.id if order.delivery_crew else None,
+                    "status": order.status,
+                    "total": str(order.total),
+                    "date": str(order.date),
+                    "items": [
+                        {
+                            "id": item.id,
+                            "menuitem" : item.menuitem.id,
+                            "menuitem_tittle": item.menuitem.tittle,
+                            "quantity": item.quantity,
+                            "unit_price": str(item.unit_price),
+                            "price": str(item.price)
+                        } 
+                        for item in order_items
+                    ]
+            }
+            orders_data.append(order_data)
+            
+        return paginator.get_paginated_response(orders_data)
     
     if request.method == 'PUT':
         if order.user == request.user:
@@ -645,3 +755,51 @@ def single_order(request, pk):
             return Response({'message':'The order has been deleted successfully'}, status=status.HTTP_200_OK)
         else:
             return Response({'message':'Only Managers can delete orders'})
+        
+@api_view(['POST', 'GET'])
+@permission_classes([IsAuthenticated])
+def category(request):
+    if request.method == 'POST':
+        #Only managers can create categories
+        if not request.user.groups.filter(name='Manager').exists():
+            return Response({'message':'Only managers can create categories'}, status=status.HTTP_403_FORBIDDEN)
+        
+        tittle = request.data.get('tittle')
+        slug = request.data.get('slug')
+        
+        #Check fields
+        if not tittle:
+            return Response({'message':'Tittle is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not slug:
+            return Response({'message':'Slug is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if Category.objects.filter(slug=slug).exists():
+            return Response({'message':'Category ith this slug is already exists'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        #Create the categori
+        category = Category.objects.create(tittle=tittle, slug=slug)
+        
+        category_data = {
+            'id':category.id,
+            'tittle': category.tittle,
+            'slug': category.slug
+        }
+        
+        return Response(category_data, status=status.HTTP_201_CREATED)
+    
+    if request.method == 'GET':
+        #Al authenticated user can list categories
+        
+        categories = Category.objects.all()
+        categories_data = [
+            {
+                'id':category.id,
+                'tittle': category.tittle,
+                'slug': category.slug
+            }
+            for category in categories
+        ]
+        
+        return Response(categories_data, status=status.HTTP_200_OK)
+        

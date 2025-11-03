@@ -28,6 +28,9 @@ urlpatterns = [
     #SINGLE ORDER
     path("orders/<int:pk>/", views.single_order, name="single-order"),
     
+    #CATEGORIES
+    path("categories/", views.category, name="categories"),
+    
 ]
     #Functional Endpoints:
     # http://localhost:8000/api/users/
@@ -41,4 +44,5 @@ urlpatterns = [
     # http://localhost:8000/api/cart/menu-items/
     # http://localhost:8000/api/orders/
     # http://localhost:8000/api/orders/<id>
+    # http://localhost:8000/api/categories/
 
