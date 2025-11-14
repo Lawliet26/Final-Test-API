@@ -1,5 +1,11 @@
 from django.urls import include, path
 from . import views
+from . import views2
+from rest_framework.routers import SimpleRouter
+
+router = SimpleRouter(trailing_slash=True)
+router.register('menu-items-class', views2.MenuItemsClassView, basename="menu-items")
+router.register('categories-class', views2.CategoriesClassView, basename="categories-class")
 
 urlpatterns = [
     # DJOSER Y AUTHENTICATION
@@ -31,7 +37,18 @@ urlpatterns = [
     #CATEGORIES
     path("categories/", views.category, name="categories"),
     
+    # ========================Endpoints classes version================
+    path("groups/managers/usersclass/", views2.AssingManagersView.as_view() , name="managers_class_view" ),
+    
+    path("groups/managers/usersclass/<int:pk>", views2.DeleteManagerView.as_view(), name="delete-manager_class_view"),
+    
+    path("groups/deliverycrew/usersclass/", views2.AssingDeliveryCrewView.as_view(), name="delivery_crew_class"),
+    
+    path("groups/deliverycrew/usersclass/<int:pk>", views2.DeleteDeliveryCrew.as_view(), name="delete_delivery_crew"),   
 ]
+
+urlpatterns += router.urls
+
     #Functional Endpoints:
     # http://localhost:8000/api/users/
     # http://localhost:8000/api/users/me/
@@ -45,4 +62,9 @@ urlpatterns = [
     # http://localhost:8000/api/orders/
     # http://localhost:8000/api/orders/<id>
     # http://localhost:8000/api/categories/
+    
+    #Functional classes views:
+    # http://127.0.0.1:8000/api/groups/managers/usersclass/ 
+    # http://127.0.0.1:8000/api/groups/managers/usersclass/<id>
+    
 
