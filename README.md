@@ -1,42 +1,42 @@
-[LittleLemon_API_Documentation.md](https://github.com/user-attachments/files/23697963/LittleLemon_API_Documentation.md)
-# Documentation of the LittleLemon API
+[LittleLemon_API_Documentation_ES.md](https://github.com/user-attachments/files/23697985/LittleLemon_API_Documentation_ES.md)
+# Documentación de la API de LittleLemon
 
-## 1. Objectives
+## 1. Objetivos
 
-### 1.1. Main Objective
+### 1.1. Objetivo Principal
 
-To provide a comprehensive documentation of the LittleLemon API, detailing its endpoints, functionalities, and usage, to facilitate its use and maintenance.
+Proporcionar una documentación completa de la API de LittleLemon, detallando sus endpoints, funcionalidades y uso, para facilitar su utilización y mantenimiento.
 
-### 1.2. Secondary Objectives
+### 1.2. Objetivos Secundarios
 
-*   To document each of the API's endpoints, including its URL, the HTTP methods it supports, the expected request format, and the possible responses.
-*   To describe the different user roles and their permissions within the API.
-*   To provide a clear and concise guide for testing the API and its endpoints.
+*   Documentar cada uno de los endpoints de la API, incluyendo su URL, los métodos HTTP que soporta, el formato de solicitud esperado y las posibles respuestas.
+*   Describir los diferentes roles de usuario y sus permisos dentro de la API.
+*   Proporcionar una guía clara y concisa para probar la API y sus endpoints.
 
-## 2. Introduction
+## 2. Introducción
 
-The LittleLemon API is a web service designed to manage a restaurant's operations. It provides functionalities for managing users, menu items, categories, shopping carts, and orders. The API is built with Django and Django REST Framework, and it uses token-based authentication for security.
+La API de LittleLemon es un servicio web diseñado para gestionar las operaciones de un restaurante. Proporciona funcionalidades para gestionar usuarios, elementos del menú, categorías, carritos de compras y pedidos. La API está construida con Django y Django REST Framework, y utiliza autenticación basada en tokens para la seguridad.
 
-This document provides a detailed description of the API's endpoints and their usage. It is intended for developers who need to interact with the API, as well as for those responsible for its maintenance and future development.
+Este documento proporciona una descripción detallada de los endpoints de la API y su uso. Está destinado a los desarrolladores que necesitan interactuar con la API, así como a los responsables de su mantenimiento y futuro desarrollo.
 
-## 3. Development (API Documentation)
+## 3. Desarrollo (Documentación de la API)
 
-This section details each of the API's endpoints.
+Esta sección detalla cada uno de los endpoints de la API.
 
-### 3.1. User Management
+### 3.1. Gestión de Usuarios
 
-#### 3.1.1. Managers
+#### 3.1.1. Gerentes
 
 ##### **Endpoint: `/api/groups/manager/users/`**
 
-*   **Description:** This endpoint allows a manager to retrieve a list of all managers or to add a user to the "Manager" group.
-*   **HTTP Methods:** `GET`, `POST`
-*   **Permissions:** Only users belonging to the "Manager" group can access this endpoint.
+*   **Descripción:** Este endpoint permite a un gerente recuperar una lista de todos los gerentes o agregar un usuario al grupo "Manager".
+*   **Métodos HTTP:** `GET`, `POST`
+*   **Permisos:** Solo los usuarios que pertenecen al grupo "Manager" pueden acceder a este endpoint.
 
-**GET Request**
+**Solicitud GET**
 
-*   **Description:** Retrieves a list of all users in the "Manager" group.
-*   **Success Response (200 OK):**
+*   **Descripción:** Recupera una lista de todos los usuarios en el grupo "Manager".
+*   **Respuesta Exitosa (200 OK):**
     ```json
     [
         {
@@ -47,83 +47,83 @@ This section details each of the API's endpoints.
         ...
     ]
     ```
-*   **Error Response (403 Forbidden):**
+*   **Respuesta de Error (403 Prohibido):**
     ```json
     {
-        "message": "Unautorized"
+        "message": "No autorizado"
     }
     ```
 
-**POST Request**
+**Solicitud POST**
 
-*   **Description:** Adds a user to the "Manager" group.
-*   **Request Body:**
+*   **Descripción:** Agrega un usuario al grupo "Manager".
+*   **Cuerpo de la Solicitud:**
     ```json
     {
         "username": "new_manager_user"
     }
     ```
-*   **Success Response (201 Created):**
+*   **Respuesta Exitosa (201 Creado):**
     ```json
     {
-        "message": "User Added to Manager group"
+        "message": "Usuario agregado al grupo de Gerentes"
     }
     ```
-*   **Error Response (403 Forbidden):**
+*   **Respuesta de Error (403 Prohibido):**
     ```json
     {
-        "message": "Unautorized"
+        "message": "No autorizado"
     }
     ```
-*   **Error Response (404 Not Found):** If the user specified in the request body does not exist.
+*   **Respuesta de Error (404 No Encontrado):** Si el usuario especificado en el cuerpo de la solicitud no existe.
 
-**Tests Screenshot:**
+**Captura de Pantalla de las Pruebas:**
 
-*(Space for screenshot)*
+*(Espacio para captura de pantalla)*
 
 ---
 
 ##### **Endpoint: `/api/groups/manager/users/{userId}`**
 
-*   **Description:** This endpoint allows a manager to remove a user from the "Manager" group.
-*   **HTTP Method:** `DELETE`
-*   **Permissions:** Only users belonging to the "Manager" group can access this endpoint.
+*   **Descripción:** Este endpoint permite a un gerente eliminar un usuario del grupo "Manager".
+*   **Método HTTP:** `DELETE`
+*   **Permisos:** Solo los usuarios que pertenecen al grupo "Manager" pueden acceder a este endpoint.
 
-**DELETE Request**
+**Solicitud DELETE**
 
-*   **Description:** Removes the user with the specified `userId` from the "Manager" group.
-*   **Success Response (200 OK):**
+*   **Descripción:** Elimina al usuario con el `userId` especificado del grupo "Manager".
+*   **Respuesta Exitosa (200 OK):**
     ```json
     {
-        "message": "User removed from Managers Group"
+        "message": "Usuario eliminado del grupo de Gerentes"
     }
     ```
-*   **Error Response (403 Forbidden):**
+*   **Respuesta de Error (403 Prohibido):**
     ```json
     {
-        "message": "Unautorized"
+        "message": "No autorizado"
     }
     ```
-*   **Error Response (404 Not Found):** If the user with the specified `userId` does not exist.
+*   **Respuesta de Error (404 No Encontrado):** Si el usuario con el `userId` especificado no existe.
 
-**Tests Screenshot:**
+**Captura de Pantalla de las Pruebas:**
 
-*(Space for screenshot)*
+*(Espacio para captura de pantalla)*
 
 ---
 
-#### 3.1.2. Delivery Crew
+#### 3.1.2. Personal de Entrega
 
 ##### **Endpoint: `/api/groups/delivery-crew/users/`**
 
-*   **Description:** This endpoint allows a manager to retrieve a list of all delivery crew members or to add a user to the "Delivery crew" group.
-*   **HTTP Methods:** `GET`, `POST`
-*   **Permissions:** Only users belonging to the "Manager" group can access this endpoint.
+*   **Descripción:** Este endpoint permite a un gerente recuperar una lista de todo el personal de entrega o agregar un usuario al grupo "Delivery crew".
+*   **Métodos HTTP:** `GET`, `POST`
+*   **Permisos:** Solo los usuarios que pertenecen al grupo "Manager" pueden acceder a este endpoint.
 
-**GET Request**
+**Solicitud GET**
 
-*   **Description:** Retrieves a list of all users in the "Delivery crew" group.
-*   **Success Response (200 OK):**
+*   **Descripción:** Recupera una lista de todos los usuarios en el grupo "Delivery crew".
+*   **Respuesta Exitosa (200 OK):**
     ```json
     [
         {
@@ -134,92 +134,92 @@ This section details each of the API's endpoints.
         ...
     ]
     ```
-*   **Error Response (403 Forbidden):**
+*   **Respuesta de Error (403 Prohibido):**
     ```json
     {
-        "message": "Unautorized"
+        "message": "No autorizado"
     }
     ```
 
-**POST Request**
+**Solicitud POST**
 
-*   **Description:** Adds a user to the "Delivery crew" group.
-*   **Request Body:**
+*   **Descripción:** Agrega un usuario al grupo "Delivery crew".
+*   **Cuerpo de la Solicitud:**
     ```json
     {
         "username": "new_delivery_user"
     }
     ```
-*   **Success Response (201 Created):**
+*   **Respuesta Exitosa (201 Creado):**
     ```json
     {
-        "message": "User Added to Delivery crew group"
+        "message": "Usuario agregado al grupo de Personal de Entrega"
     }
     ```
-*   **Error Response (403 Forbidden):**
+*   **Respuesta de Error (403 Prohibido):**
     ```json
     {
-        "message": "Unautorized"
+        "message": "No autorizado"
     }
     ```
-*   **Error Response (404 Not Found):** If the user specified in the request body does not exist.
+*   **Respuesta de Error (404 No Encontrado):** Si el usuario especificado en el cuerpo de la solicitud no existe.
 
-**Tests Screenshot:**
+**Captura de Pantalla de las Pruebas:**
 
-*(Space for screenshot)*
+*(Espacio para captura de pantalla)*
 
 ---
 
 ##### **Endpoint: `/api/groups/delivery-crew/users/{userId}`**
 
-*   **Description:** This endpoint allows a manager to remove a user from the "Delivery crew" group.
-*   **HTTP Method:** `DELETE`
-*   **Permissions:** Only users belonging to the "Manager" group can access this endpoint.
+*   **Descripción:** Este endpoint permite a un gerente eliminar un usuario del grupo "Delivery crew".
+*   **Método HTTP:** `DELETE`
+*   **Permisos:** Solo los usuarios que pertenecen al grupo "Manager" pueden acceder a este endpoint.
 
-**DELETE Request**
+**Solicitud DELETE**
 
-*   **Description:** Removes the user with the specified `userId` from the "Delivery crew" group.
-*   **Success Response (200 OK):**
+*   **Descripción:** Elimina al usuario con el `userId` especificado del grupo "Delivery crew".
+*   **Respuesta Exitosa (200 OK):**
     ```json
     {
-        "message": "User removed from Delivery crew Group"
+        "message": "Usuario eliminado del grupo de Personal de Entrega"
     }
     ```
-*   **Error Response (403 Forbidden):**
+*   **Respuesta de Error (403 Prohibido):**
     ```json
     {
-        "message": "Unautorized"
+        "message": "No autorizado"
     }
     ```
-*   **Error Response (404 Not Found):** If the user with the specified `userId` does not exist.
+*   **Respuesta de Error (404 No Encontrado):** Si el usuario con el `userId` especificado no existe.
 
-**Tests Screenshot:**
+**Captura de Pantalla de las Pruebas:**
 
-*(Space for screenshot)*
+*(Espacio para captura de pantalla)*
 
 ---
 
-### 3.2. Menu Items
+### 3.2. Elementos del Menú
 
 ##### **Endpoint: `/api/menu-items/`**
 
-*   **Description:** This endpoint allows any user to retrieve a list of menu items. Managers can also create new menu items.
-*   **HTTP Methods:** `GET`, `POST`
-*   **Permissions:**
-    *   `GET`: Authenticated or read-only access.
-    *   `POST`: Only users belonging to the "Manager" group.
+*   **Descripción:** Este endpoint permite a cualquier usuario recuperar una lista de elementos del menú. Los gerentes también pueden crear nuevos elementos del menú.
+*   **Métodos HTTP:** `GET`, `POST`
+*   **Permisos:**
+    *   `GET`: Acceso autenticado o de solo lectura.
+    *   `POST`: Solo usuarios que pertenecen al grupo "Manager".
 
-**GET Request**
+**Solicitud GET**
 
-*   **Description:** Retrieves a list of all menu items. It supports filtering, searching, and ordering.
-*   **Query Parameters:**
-    *   `search`: Search by title or category title.
-    *   `category`: Filter by category ID.
-    *   `featured`: Filter by featured status (`true` or `false`).
-    *   `price__gte`: Filter by price greater than or equal to the specified value.
-    *   `price__lte`: Filter by price less than or equal to the specified value.
-    *   `ordering`: Order by `price`, `-price`, `tittle`, `-tittle`, `category`, `-category`, `featured`, `-featured`.
-*   **Success Response (200 OK):**
+*   **Descripción:** Recupera una lista de todos los elementos del menú. Soporta filtrado, búsqueda y ordenamiento.
+*   **Parámetros de Consulta:**
+    *   `search`: Búsqueda por título o título de categoría.
+    *   `category`: Filtrar por ID de categoría.
+    *   `featured`: Filtrar por estado de destacado (`true` o `false`).
+    *   `price__gte`: Filtrar por precio mayor or igual al valor especificado.
+    *   `price__lte`: Filtrar por precio menor or igual al valor especificado.
+    *   `ordering`: Ordenar por `price`, `-price`, `tittle`, `-tittle`, `category`, `-category`, `featured`, `-featured`.
+*   **Respuesta Exitosa (200 OK):**
     ```json
     {
         "count": 1,
@@ -237,10 +237,10 @@ This section details each of the API's endpoints.
     }
     ```
 
-**POST Request**
+**Solicitud POST**
 
-*   **Description:** Creates one or more new menu items.
-*   **Request Body (single item):**
+*   **Descripción:** Crea uno o más elementos nuevos en el menú.
+*   **Cuerpo de la Solicitud (un solo elemento):**
     ```json
     {
         "tittle": "Pizza",
@@ -249,7 +249,7 @@ This section details each of the API's endpoints.
         "category": 2
     }
     ```
-*   **Request Body (multiple items):**
+*   **Cuerpo de la Solicitud (múltiples elementos):**
     ```json
     [
         {
@@ -266,7 +266,7 @@ This section details each of the API's endpoints.
         }
     ]
     ```
-*   **Success Response (201 Created):**
+*   **Respuesta Exitosa (201 Creado):**
     ```json
     [
         {
@@ -278,31 +278,31 @@ This section details each of the API's endpoints.
         }
     ]
     ```
-*   **Error Response (403 Forbidden):**
+*   **Respuesta de Error (403 Prohibido):**
     ```json
     {
-        "message": "Unautorized"
+        "message": "No autorizado"
     }
     ```
 
-**Tests Screenshot:**
+**Captura de Pantalla de las Pruebas:**
 
-*(Space for screenshot)*
+*(Espacio para captura de pantalla)*
 
 ---
 
 ##### **Endpoint: `/api/menu-items/{pk}/`**
 
-*   **Description:** This endpoint allows any authenticated user to retrieve a single menu item. Managers can also update or delete a menu item.
-*   **HTTP Methods:** `GET`, `PUT`, `PATCH`, `DELETE`
-*   **Permissions:**
-    *   `GET`: Authenticated users.
-    *   `PUT`, `PATCH`, `DELETE`: Only users belonging to the "Manager" group.
+*   **Descripción:** Este endpoint permite a cualquier usuario autenticado recuperar un solo elemento del menú. Los gerentes también pueden actualizar o eliminar un elemento del menú.
+*   **Métodos HTTP:** `GET`, `PUT`, `PATCH`, `DELETE`
+*   **Permisos:**
+    *   `GET`: Usuarios autenticados.
+    *   `PUT`, `PATCH`, `DELETE`: Solo usuarios que pertenecen al grupo "Manager".
 
-**GET Request**
+**Solicitud GET**
 
-*   **Description:** Retrieves a single menu item by its ID.
-*   **Success Response (200 OK):**
+*   **Descripción:** Recupera un solo elemento del menú por su ID.
+*   **Respuesta Exitosa (200 OK):**
     ```json
     {
         "id": 1,
@@ -313,65 +313,65 @@ This section details each of the API's endpoints.
     }
     ```
 
-**PUT/PATCH Request**
+**Solicitud PUT/PATCH**
 
-*   **Description:** Updates a menu item. `PUT` requires all fields, while `PATCH` allows partial updates.
-*   **Request Body:**
+*   **Descripción:** Actualiza un elemento del menú. `PUT` requiere todos los campos, mientras que `PATCH` permite actualizaciones parciales.
+*   **Cuerpo de la Solicitud:**
     ```json
     {
-        "tittle": "New Tittle",
+        "tittle": "Nuevo Título",
         "price": "12.50",
         "featured": true,
         "category": 1
     }
     ```
-*   **Success Response (200 OK):**
+*   **Respuesta Exitosa (200 OK):**
     ```json
     {
-        "message": "Item Updated"
+        "message": "Elemento Actualizado"
     }
     ```
-*   **Error Response (403 Forbidden):**
+*   **Respuesta de Error (403 Prohibido):**
     ```json
     {
-        "message": "Unautorized"
-    }
-    ```
-
-**DELETE Request**
-
-*   **Description:** Deletes a menu item.
-*   **Success Response (200 OK):**
-    ```json
-    {
-        "message": "Item Deleted"
-    }
-    ```
-*   **Error Response (403 Forbidden):**
-    ```json
-    {
-        "message": "Unautorized"
+        "message": "No autorizado"
     }
     ```
 
-**Tests Screenshot:**
+**Solicitud DELETE**
 
-*(Space for screenshot)*
+*   **Descripción:** Elimina un elemento del menú.
+*   **Respuesta Exitosa (200 OK):**
+    ```json
+    {
+        "message": "Elemento Eliminado"
+    }
+    ```
+*   **Respuesta de Error (403 Prohibido):**
+    ```json
+    {
+        "message": "No autorizado"
+    }
+    ```
+
+**Captura de Pantalla de las Pruebas:**
+
+*(Espacio para captura de pantalla)*
 
 ---
 
-### 3.3. Cart Management
+### 3.3. Gestión del Carrito
 
 ##### **Endpoint: `/api/cart/menu-items/`**
 
-*   **Description:** This endpoint allows an authenticated user (customer) to manage their shopping cart.
-*   **HTTP Methods:** `GET`, `POST`, `DELETE`
-*   **Permissions:** Only authenticated users (customers).
+*   **Descripción:** Este endpoint permite a un usuario autenticado (cliente) gestionar su carrito de compras.
+*   **Métodos HTTP:** `GET`, `POST`, `DELETE`
+*   **Permisos:** Solo usuarios autenticados (clientes).
 
-**GET Request**
+**Solicitud GET**
 
-*   **Description:** Retrieves the items in the user's shopping cart.
-*   **Success Response (200 OK):**
+*   **Descripción:** Recupera los elementos en el carrito de compras del usuario.
+*   **Respuesta Exitosa (200 OK):**
     ```json
     [
         {
@@ -385,17 +385,17 @@ This section details each of the API's endpoints.
     ]
     ```
 
-**POST Request**
+**Solicitud POST**
 
-*   **Description:** Adds an item to the shopping cart or updates its quantity if it already exists.
-*   **Request Body:**
+*   **Descripción:** Agrega un elemento al carrito de compras o actualiza su cantidad si ya existe.
+*   **Cuerpo de la Solicitud:**
     ```json
     {
         "menuitem": 1,
         "quantity": 3
     }
     ```
-*   **Success Response (200 OK or 201 Created):**
+*   **Respuesta Exitosa (200 OK o 201 Creado):**
     ```json
     {
         "id": 1,
@@ -406,43 +406,43 @@ This section details each of the API's endpoints.
         "price": "30.00"
     }
     ```
-*   **Error Response (400 Bad Request):**
+*   **Respuesta de Error (400 Solicitud Incorrecta):**
     ```json
     {
-        "message": "menuitem and quantity are required"
+        "message": "menuitem y quantity son requeridos"
     }
     ```
 
-**DELETE Request**
+**Solicitud DELETE**
 
-*   **Description:** Clears all items from the user's shopping cart.
-*   **Success Response (200 OK):**
+*   **Descripción:** Elimina todos los elementos del carrito de compras del usuario.
+*   **Respuesta Exitosa (200 OK):**
     ```json
     {
-        "message": "Cart cleared"
+        "message": "Carrito vaciado"
     }
     ```
 
-**Tests Screenshot:**
+**Captura de Pantalla de las Pruebas:**
 
-*(Space for screenshot)*
+*(Espacio para captura de pantalla)*
 
 ---
 
-### 3.4. Order Management
+### 3.4. Gestión de Pedidos
 
 ##### **Endpoint: `/api/orders/`**
 
-*   **Description:** This endpoint allows customers to create new orders and view their own orders. Managers can view all orders.
-*   **HTTP Methods:** `GET`, `POST`
-*   **Permissions:**
-    *   `GET`: Authenticated users. Managers can see all orders, while customers can only see their own.
-    *   `POST`: Only authenticated users (customers).
+*   **Descripción:** Este endpoint permite a los clientes crear nuevos pedidos y ver sus propios pedidos. Los gerentes pueden ver todos los pedidos.
+*   **Métodos HTTP:** `GET`, `POST`
+*   **Permisos:**
+    *   `GET`: Usuarios autenticados. Los gerentes pueden ver todos los pedidos, mientras que los clientes solo pueden ver los suyos.
+    *   `POST`: Solo usuarios autenticados (clientes).
 
-**GET Request**
+**Solicitud GET**
 
-*   **Description:** Retrieves a list of orders.
-*   **Success Response (200 OK):**
+*   **Descripción:** Recupera una lista de pedidos.
+*   **Respuesta Exitosa (200 OK):**
     ```json
     [
         {
@@ -466,10 +466,10 @@ This section details each of the API's endpoints.
     ]
     ```
 
-**POST Request**
+**Solicitud POST**
 
-*   **Description:** Creates a new order from the items in the user's shopping cart. The cart is cleared after the order is created.
-*   **Success Response (201 Created):**
+*   **Descripción:** Crea un nuevo pedido a partir de los elementos en el carrito de compras del usuario. El carrito se vacía después de crear el pedido.
+*   **Respuesta Exitosa (201 Creado):**
     ```json
     {
         "id": 2,
@@ -490,38 +490,38 @@ This section details each of the API's endpoints.
         ]
     }
     ```
-*   **Error Response (400 Bad Request):**
+*   **Respuesta de Error (400 Solicitud Incorrecta):**
     ```json
     {
-        "message": "Cart is empty"
+        "message": "El carrito está vacío"
     }
     ```
-*   **Error Response (403 Forbidden):** If a manager or delivery crew member tries to create an order.
+*   **Respuesta de Error (403 Prohibido):** Si un gerente o un miembro del personal de entrega intenta crear un pedido.
     ```json
     {
-        "message": "Only customer can create orders"
+        "message": "Solo los clientes pueden crear pedidos"
     }
     ```
 
-**Tests Screenshot:**
+**Captura de Pantalla de las Pruebas:**
 
-*(Space for screenshot)*
+*(Espacio para captura de pantalla)*
 
 ---
 
 ##### **Endpoint: `/api/orders/{pk}/`**
 
-*   **Description:** This endpoint allows users to view, update, or delete a single order, with permissions based on their role.
-*   **HTTP Methods:** `GET`, `PUT`, `PATCH`, `DELETE`
-*   **Permissions:**
-    *   **Manager:** Can `GET`, `PATCH` (delivery crew and status), and `DELETE` any order.
-    *   **Delivery Crew:** Can `GET` orders assigned to them and `PATCH` the status of those orders.
-    *   **Customer:** Can `GET` their own orders and `PUT` or `PATCH` the items within their orders.
+*   **Descripción:** Este endpoint permite a los usuarios ver, actualizar o eliminar un solo pedido, con permisos basados en su rol.
+*   **Métodos HTTP:** `GET`, `PUT`, `PATCH`, `DELETE`
+*   **Permisos:**
+    *   **Gerente:** Puede `GET`, `PATCH` (personal de entrega y estado), and `DELETE` cualquier pedido.
+    *   **Personal de Entrega:** Puede `GET` los pedidos que se le han asignado y `PATCH` el estado de esos pedidos.
+    *   **Cliente:** Puede `GET` sus propios pedidos y `PUT` o `PATCH` los elementos dentro de sus pedidos.
 
-**GET Request**
+**Solicitud GET**
 
-*   **Description:** Retrieves a single order by its ID.
-*   **Success Response (200 OK):**
+*   **Descripción:** Recupera un solo pedido por su ID.
+*   **Respuesta Exitosa (200 OK):**
     ```json
     {
         "id": 1,
@@ -543,12 +543,12 @@ This section details each of the API's endpoints.
         ]
     }
     ```
-*   **Error Response (403 Forbidden):** If a user tries to access an order that does not belong to them.
+*   **Respuesta de Error (403 Prohibido):** Si un usuario intenta acceder a un pedido que no le pertenece.
 
-**PUT Request (Customer only)**
+**Solicitud PUT (solo Cliente)**
 
-*   **Description:** Updates the items in an order.
-*   **Request Body:**
+*   **Descripción:** Actualiza los elementos en un pedido.
+*   **Cuerpo de la Solicitud:**
     ```json
     {
         "items": [
@@ -557,109 +557,109 @@ This section details each of the API's endpoints.
         ]
     }
     ```
-*   **Success Response (200 OK):**
+*   **Respuesta Exitosa (200 OK):**
     ```json
     {
-        "message": "Order update successfully",
+        "message": "Pedido actualizado exitosamente",
         "items_added": 2,
         "total_updated": "35.00"
     }
     ```
 
-**PATCH Request**
+**Solicitud PATCH**
 
-*   **Manager:** Can update `delivery_crew` and `status`.
-    *   **Request Body:** `{"delivery_crew": 2, "status": 1}`
-    *   **Success Response:** `{"message": "Order updated successfully"}`
-*   **Delivery Crew:** Can update `status`.
-    *   **Request Body:** `{"status": 1}`
-    *   **Success Response:** `{"message": "Order status has been updated successfully"}`
-*   **Customer:** Can update the quantity of a single item or add a new item.
-    *   **Request Body:** `{"menuitem": 1, "quantity": 5}`
-    *   **Success Response:** `{"message": "Item Bruschetta has been updated successfully", "total_updated": "50.00"}`
+*   **Gerente:** Puede actualizar `delivery_crew` y `status`.
+    *   **Cuerpo de la Solicitud:** `{"delivery_crew": 2, "status": 1}`
+    *   **Respuesta Exitosa:** `{"message": "Pedido actualizado exitosamente"}`
+*   **Personal de Entrega:** Puede actualizar `status`.
+    *   **Cuerpo de la Solicitud:** `{"status": 1}`
+    *   **Respuesta Exitosa:** `{"message": "El estado del pedido ha sido actualizado exitosamente"}`
+*   **Cliente:** Puede actualizar la cantidad de un solo elemento o agregar un nuevo elemento.
+    *   **Cuerpo de la Solicitud:** `{"menuitem": 1, "quantity": 5}`
+    *   **Respuesta Exitosa:** `{"message": "El elemento Bruschetta ha sido actualizado exitosamente", "total_updated": "50.00"}`
 
-**DELETE Request (Manager only)**
+**Solicitud DELETE (solo Gerente)**
 
-*   **Description:** Deletes an order.
-*   **Success Response (200 OK):**
+*   **Descripción:** Elimina un pedido.
+*   **Respuesta Exitosa (200 OK):**
     ```json
     {
-        "message": "The order has been deleted successfully"
+        "message": "El pedido ha sido eliminado exitosamente"
     }
     ```
 
-**Tests Screenshot:**
+**Captura de Pantalla de las Pruebas:**
 
-*(Space for screenshot)*
+*(Espacio para captura de pantalla)*
 
 ---
 
-### 3.5. Category Management
+### 3.5. Gestión de Categorías
 
 ##### **Endpoint: `/api/categories/`**
 
-*   **Description:** This endpoint allows any authenticated user to retrieve a list of categories. Managers can also create new categories.
-*   **HTTP Methods:** `GET`, `POST`
-*   **Permissions:**
-    *   `GET`: Authenticated users.
-    *   `POST`: Only users belonging to the "Manager" group.
+*   **Descripción:** Este endpoint permite a cualquier usuario autenticado recuperar una lista de categorías. Los gerentes también pueden crear nuevas categorías.
+*   **Métodos HTTP:** `GET`, `POST`
+*   **Permisos:**
+    *   `GET`: Usuarios autenticados.
+    *   `POST`: Solo usuarios que pertenecen al grupo "Manager".
 
-**GET Request**
+**Solicitud GET**
 
-*   **Description:** Retrieves a list of all categories.
-*   **Success Response (200 OK):**
+*   **Descripción:** Recupera una lista de todas las categorías.
+*   **Respuesta Exitosa (200 OK):**
     ```json
     [
         {
             "id": 1,
-            "tittle": "Starters",
-            "slug": "starters"
+            "tittle": "Entrantes",
+            "slug": "entrantes"
         },
         ...
     ]
     ```
 
-**POST Request**
+**Solicitud POST**
 
-*   **Description:** Creates a new category.
-*   **Request Body:**
+*   **Descripción:** Crea una nueva categoría.
+*   **Cuerpo de la Solicitud:**
     ```json
     {
-        "tittle": "Main Courses",
-        "slug": "main-courses"
+        "tittle": "Platos Principales",
+        "slug": "platos-principales"
     }
     ```
-*   **Success Response (201 Created):**
+*   **Respuesta Exitosa (201 Creado):**
     ```json
     {
         "id": 2,
-        "tittle": "Main Courses",
-        "slug": "main-courses"
+        "tittle": "Platos Principales",
+        "slug": "platos-principales"
     }
     ```
-*   **Error Response (400 Bad Request):**
+*   **Respuesta de Error (400 Solicitud Incorrecta):**
     ```json
     {
-        "message": "Tittle is required"
+        "message": "El título es requerido"
     }
     ```
-*   **Error Response (403 Forbidden):**
+*   **Respuesta de Error (403 Prohibido):**
     ```json
     {
-        "message": "Only managers can create categories"
+        "message": "Solo los gerentes pueden crear categorías"
     }
     ```
 
-**Tests Screenshot:**
+**Captura de Pantalla de las Pruebas:**
 
-*(Space for screenshot)*
+*(Espacio para captura de pantalla)*
 
-## 4. Conclusions
+## 4. Conclusiones
 
-The LittleLemon API offers a robust and secure set of endpoints for managing a restaurant's operations. The role-based access control is well-defined, ensuring that users can only access the resources and perform the actions that are appropriate for their role.
+La API de LittleLemon ofrece un conjunto de endpoints robusto y seguro para gestionar las operaciones de un restaurante. El control de acceso basado en roles está bien definido, asegurando que los usuarios solo puedan acceder a los recursos y realizar las acciones apropiadas para su rol.
 
-The API is well-structured and follows the principles of REST. The use of standard HTTP methods and status codes makes it easy to understand and interact with.
+La API está bien estructurada y sigue los principios de REST. El uso de métodos y códigos de estado HTTP estándar facilita su comprensión e interacción.
 
-The documentation provides a comprehensive overview of the API's functionality. However, it is important to note that the API is still under development, and some features are implemented in two different ways (function-based and class-based views). This suggests an ongoing refactoring process, and it is recommended to complete this process to ensure consistency and maintainability.
+La documentación proporciona una visión general completa de la funcionalidad de la API. Sin embargo, es importante tener en cuenta que la API todavía está en desarrollo, y algunas características se implementan de dos maneras diferentes (vistas basadas en funciones y vistas basadas en clases). Esto sugiere un proceso de refactorización en curso, y se recomienda completar este proceso para garantizar la consistencia y la mantenibilidad.
 
-Finally, the documentation includes placeholders for test screenshots. It is crucial to perform thorough testing of the API to ensure its correctness and robustness.
+Finalmente, la documentación incluye marcadores de posición para capturas de pantalla de las pruebas. Es crucial realizar pruebas exhaustivas de la API para garantizar su corrección y robustez.
