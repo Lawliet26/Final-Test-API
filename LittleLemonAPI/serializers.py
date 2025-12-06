@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User, Group
 from .models import *
+from datetime import date
 
 
 # ModelSerializer: Aplica validaciones automaticas por lo que busca coincidencia del usuario y si lo encuentra tira error ya que ele usuario ya existe, se usa con las subclase Meta:
@@ -63,5 +64,137 @@ class CategoriesSerializer(serializers.ModelSerializer):
         model = Category
         fields = "__all__"
         
+class CartSerializer(serializers.ModelSerializer):
+    menuitem = serializers.PrimaryKeyRelatedField(
+        queryset=MenuItem.objects.all()
+    )
     
+    quantity = serializers.IntegerField(min_value=1)
+    
+    unit_price = serializers.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        read_only = True
+    )
+    
+    price = serializers.DecimalField(
+        decimal_places=2,
+        max_digits=6,
+        read_only=True
+    )
+    
+    class Meta:
+        model = Cart
+        fields = ['id','menuitem', 'quantity', 'unit_price', 'price']
+        read_only_fields = ['id', 'user', 'unit_price', 'price']
+        
+    def create(self, validated_data):
+        menuitem = validated_data.get('menuitem')
+        quantity = validated_data.get('quantity')
+        
+        unit_price = menuitem.price
+        price = unit_price * quantity
+        
+        cart, created = Cart.objects.update_or_create(
+            user = self.context['request'].user,
+            menuitem=menuitem,
+            defaults={
+                'quantity': quantity,
+                'unit_price':unit_price,
+                'price': price
+            }
+        )
+        
+        return cart
+    
+class OrderItemSerializer(serializers.ModelSerializer):
+    menuitem = serializers.PrimaryKeyRelatedField(read_only=True)
+    menuitem_tittle = serializers.CharField(source='menuitem.tittle', read_only=True)
+    
+    class Meta:
+        model= OrderItem
+        fields = ["id", 'quantity', 'unit_price', 'price','menuitem', 'menuitem_tittle']
+        read_only_fields = ['id','price', 'unit_price','menuitem']
+        
+    
+class OrderSerializer(serializers.ModelSerializer):
+    
+    delivery_crew = serializers.PrimaryKeyRelatedField(
+        required = False,
+        allow_null=True,
+        read_only=True
+    )
+    
+    items = OrderItemSerializer(source = 'orderitem_set', many=True, read_only = True)
+    
+    class Meta:
+        model = Order
+        fields = ['id','user','delivery_crew', 'status', 'date', 'total','items']
+        read_only_fields = ['id','deliverry_crew', 'date', 'status', 'total', 'user']
+        
+    # Sobreescritura del metodo create 
+    def create(self, validated_data):
+        user = self.context['request'].user
+        
+        if user.groups.filter(name__in=['Manager','Delivery crew']).exists():
+            raise serializers.ValidationError('Only Customers can create orders') 
+        
+        cart = Cart.objects.filter(user=user)
+        
+        if not cart.exists():
+            raise serializers.ValidationError('The cart is empty')
+        
+        total = sum(item.price for item in cart)
+        
+        order = Order.objects.create(
+            user=user,
+            delivery_crew = None,
+            status = 0,
+            total = total,
+            date = date.today()
+        )
+        
+        for item in cart:
+            OrderItem.objects.create(
+                order = order,
+                menuitem = item.menuitem,
+                quantity = item.quantity,
+                unit_price = item.unit_price,
+                price = item.price
+            )
+            
+        Cart.objects.filter(user=user).delete()
+        
+        return order
+    
+class ManagerUpdateOrderSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Order
+        fields = ['id','user','delivery_crew', 'status', 'date', 'total']
+        read_only_fields = ['id','user','date', 'total']
+    
+    def validate_delivery_crew(self, value):
+        
+        if value is None:
+            return value
+        
+        if not value.groups.filter(name="Delivery crew").exists():
+            raise serializers.ValidationError('User does not belong to the Delivery group')
+        
+        return value
+    
+        
+    
+class DeliveryUpdateOrderSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model=Order
+        fields = ['id','user','delivery_crew', 'status', 'date', 'total']
+        read_only_fields = ['id','user','date', 'total','delivery_crew']
+            
+        
+
+    
+
     

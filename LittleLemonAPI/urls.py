@@ -45,6 +45,16 @@ urlpatterns = [
     path("groups/deliverycrew/usersclass/", views2.AssingDeliveryCrewView.as_view(), name="delivery_crew_class"),
     
     path("groups/deliverycrew/usersclass/<int:pk>", views2.DeleteDeliveryCrew.as_view(), name="delete_delivery_crew"),   
+    
+    path("cart/", views2.CartClassView.as_view(), name="Cart-class-view"),
+    
+    path("orders-class/", views2.OrderClassView.as_view(), name="orders-class"),
+    
+    path("order/<int:pk>", views2.SimpleOrderClassView.as_view(), name="simple-order"),
+    
+    path("order/<int:pk>/update/", views2.SimpleOrderUpdateClass.as_view(), name="update-orders"),
+    
+    path("order/<int:pk>/delete/", views2.DeleteOrderClass.as_view(), name="delete-order")
 ]
 
 urlpatterns += router.urls
